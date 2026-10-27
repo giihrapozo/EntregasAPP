@@ -1,0 +1,174 @@
+// 1.a — Instalação e primeira navegação
+// import React from 'react';
+// import { View, Text } from 'react-native';
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+// const Stack = createNativeStackNavigator();
+
+// function TelaInicial() {
+//   return (
+//     <View>
+//       <Text>Olá, navegação!</Text>
+//     </View>
+//   );
+// }
+
+// export default function App() {
+//   return (
+//     <NavigationContainer>
+//       <Stack.Navigator>
+//         <Stack.Screen
+//           name="Inicio"
+//           component={TelaInicial}
+//         />
+//       </Stack.Navigator>
+//     </NavigationContainer>
+//   );
+// }
+
+// 1.b e 1.c — Navegar, voltar e personalizar o header
+
+// import React from 'react';
+// import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+// const Stack = createNativeStackNavigator();
+
+// function TelaInicial({ navigation }) {
+//   return (
+//     <View style={estilos.tela}>
+//       <Text>Olá, navegação!</Text>
+
+//       <TouchableOpacity
+//         onPress={() => navigation.navigate('Detalhes')}
+//       >
+//         <Text>Ir para Detalhes</Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// }
+
+// function TelaDetalhes({ navigation }) {
+//   return (
+//     <View style={estilos.tela}>
+//       <Text>Estou na tela de detalhes</Text>
+
+//       <TouchableOpacity onPress={() => navigation.goBack()}>
+//         <Text>Voltar</Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// }
+
+// export default function App() {
+//   return (
+//     <NavigationContainer>
+//       <Stack.Navigator initialRouteName="Inicio">
+//         <Stack.Screen
+//           name="Inicio"
+//           component={TelaInicial}
+//           options={{ title: 'Home' }}
+//         />
+
+//         <Stack.Screen
+//           name="Detalhes"
+//           component={TelaDetalhes}
+//           options={{ title: 'Detalhes do Item' }}
+//         />
+//       </Stack.Navigator>
+//     </NavigationContainer>
+//   );
+// }
+
+// const estilos = StyleSheet.create({
+//   tela: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+// });
+
+// 2.a e 2.b — Enviar nome, e-mail e idade
+
+// import React, { useState } from 'react';
+// import {
+//   View, Text, TextInput, TouchableOpacity, StyleSheet
+// } from 'react-native';
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+// const Stack = createNativeStackNavigator();
+
+// function TelaInicial({ navigation }) {
+//   const [nome, setNome] = useState('');
+//   const [email, setEmail] = useState('');
+//   const [idade, setIdade] = useState('');
+
+//   return (
+//     <View style={estilos.tela}>
+//       <TextInput
+//         placeholder="Nome"
+//         value={nome}
+//         onChangeText={setNome}
+//       />
+
+//       <TextInput
+//         placeholder="E-mail"
+//         value={email}
+//         onChangeText={setEmail}
+//       />
+
+//       <TextInput
+//         placeholder="Idade"
+//         value={idade}
+//         onChangeText={setIdade}
+//         keyboardType="numeric"
+//       />
+
+//       <TouchableOpacity
+//         onPress={() =>
+//           navigation.navigate('Detalhes', { nome, email, idade })
+//         }
+//       >
+//         <Text>Cadastrar</Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// }
+
+// function TelaDetalhes({ route, navigation }) {
+//   const { nome, email, idade } = route.params;
+
+//   return (
+//     <View style={estilos.tela}>
+//       <Text>Nome: {nome}</Text>
+//       <Text>E-mail: {email}</Text>
+//       <Text>Idade: {idade}</Text>
+
+//       <TouchableOpacity onPress={() => navigation.goBack()}>
+//         <Text>Voltar</Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// }
+
+// export default function App() {
+//   return (
+//     <NavigationContainer>
+//       <Stack.Navigator>
+//         <Stack.Screen name="Inicio" component={TelaInicial} />
+//         <Stack.Screen name="Detalhes" component={TelaDetalhes} />
+//       </Stack.Navigator>
+//     </NavigationContainer>
+//   );
+// }
+
+// const estilos = StyleSheet.create({
+//   tela: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     padding: 20,
+//   },
+// });
