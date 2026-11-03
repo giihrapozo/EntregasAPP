@@ -1,0 +1,148 @@
+
+import React, { useState, useEffect, createContext, useContext } from 'react';
+import { View, Text, Button } from 'react-native';
+
+
+// EXEMPLO 1 - useState
+// Contador
+
+
+function Contador() {
+  const [contador, setContador] = useState(0);
+
+  return (
+    <View style={{ alignItems: 'center', marginBottom: 25 }}>
+      <Text style={{ fontSize: 20, marginBottom: 10 }}>
+        Contador: {contador}
+      </Text>
+
+      <Button
+        title="+1"
+        onPress={() => setContador(contador + 1)}
+      />
+
+      <Button
+        title="-1"
+        onPress={() => setContador(contador - 1)}
+      />
+
+      <Button
+        title="Zerar"
+        onPress={() => setContador(0)}
+      />
+    </View>
+  );
+}
+
+
+// EXEMPLO 2 - useEffect
+// Cronômetro
+
+
+function Cronometro() {
+  const [segundos, setSegundos] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setSegundos(s => s + 1);
+    }, 1000);
+
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <Text style={{ fontSize: 20, marginBottom: 25 }}>
+      Cronômetro: {segundos}s
+    </Text>
+  );
+}
+
+
+// EXEMPLO 3 - useContext
+// Tema
+
+
+const TemaContext = createContext();
+
+const cores = {
+  claro: {
+    fundo: '#FFFFFF',
+    texto: '#111111',
+    primaria: '#6200EE'
+  },
+  escuro: {
+    fundo: '#121212',
+    texto: '#EEEEEE',
+    primaria: '#BB86FC'
+  }
+};
+
+function TemaProvider({ children }) {
+  const [modo, setModo] = useState('claro');
+
+  const alternarTema = () =>
+    setModo(m => (m === 'claro' ? 'escuro' : 'claro'));
+
+  return (
+    <TemaContext.Provider
+      value={{ modo, cores: cores[modo], alternarTema }}
+    >
+      {children}
+    </TemaContext.Provider>
+  );
+}
+
+
+// Tela principal
+
+
+function Home() {
+  const { modo, cores, alternarTema } = useContext(TemaContext);
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: cores.fundo,
+        padding: 20
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 24,
+          color: cores.texto,
+          marginBottom: 25
+        }}
+      >
+        Atividade 8 - Hooks
+      </Text>
+
+      <Contador />
+
+      <Cronometro />
+
+      <Text style={{ fontSize: 20, color: cores.texto }}>
+        Tema atual: {modo}
+      </Text>
+
+      <Button
+        title="Trocar tema"
+        onPress={alternarTema}
+      />
+    </View>
+  );
+}
+
+
+// App
+
+
+export default function App() {
+  return (
+    <TemaProvider>
+      <Home />
+    </TemaProvider>
+  );
+}
