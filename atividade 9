@@ -1,0 +1,70 @@
+
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button } from 'react-native';
+
+// EXEMPLO 1 - Dependências
+function Exemplo1() {
+  const [contador, setContador] = useState(0);
+
+  useEffect(() => {
+    console.log('montou!');
+  }, []);
+
+  useEffect(() => {
+    console.log('contador mudou para:', contador);
+  }, [contador]);
+
+  return (
+    <View>
+      <Text>Contador: {contador}</Text>
+      <Button
+        title="Aumentar"
+        onPress={() => setContador(contador + 1)}
+      />
+    </View>
+  );
+}
+
+// EXEMPLO 2 - Limpeza
+function Exemplo2() {
+  useEffect(() => {
+    const id = setInterval(() => {
+      console.log('tick');
+    }, 1000);
+
+    return () => clearInterval(id);
+  }, []);
+
+  return null;
+}
+
+// EXEMPLO 3 - Busca de usuário
+function Usuario({ id }) {
+  const [usuario, setUsuario] = useState(null);
+
+  useEffect(() => {
+    fetch(`/api/usuarios/${id}`)
+      .then(res => res.json())
+      .then(dados => setUsuario(dados));
+  }, [id]);
+
+  if (!usuario) return <Text>Carregando...</Text>;
+
+  return <Text>{usuario.nome}</Text>;
+}
+
+// Aplicativo principal
+export default function App() {
+  return (
+    <View>
+      <Text>EXEMPLO 1</Text>
+      <Exemplo1 />
+
+      <Text>EXEMPLO 2</Text>
+      <Exemplo2 />
+
+      <Text>EXEMPLO 3</Text>
+      <Usuario id={1} />
+    </View>
+  );
+}
