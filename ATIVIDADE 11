@@ -1,0 +1,338 @@
+/ 1. Exemplo — Tema claro e escuro
+
+
+// import React, { createContext, useContext, useState } from 'react';
+// import { View, Text, Button, StyleSheet } from 'react-native';
+
+// const TemaContext = createContext(null);
+
+// function TemaProvider({ children }) {
+//   const [modo, setModo] = useState('claro');
+
+//   const cores = modo === 'claro'
+//     ? { fundo: '#FFFFFF', texto: '#000000', primaria: '#2196F3' }
+//     : { fundo: '#222222', texto: '#FFFFFF', primaria: '#BB86FC' };
+
+//   function alternarTema() {
+//     setModo(m => (m === 'claro' ? 'escuro' : 'claro'));
+//   }
+
+//   return (
+//     <TemaContext.Provider value={{ modo, cores, alternarTema }}>
+//       {children}
+//     </TemaContext.Provider>
+//   );
+// }
+
+// function Home() {
+//   const { modo, cores, alternarTema } = useContext(TemaContext);
+
+//   return (
+//     <View style={[styles.container, { backgroundColor: cores.fundo }]}>
+//       <Text style={[styles.titulo, { color: cores.texto }]}>
+//         Tema atual: {modo}
+//       </Text>
+
+//       <Button
+//         title="Trocar tema"
+//         color={cores.primaria}
+//         onPress={alternarTema}
+//       />
+//     </View>
+//   );
+// }
+
+// export default function App() {
+//   return (
+//     <TemaProvider>
+//       <Home />
+//     </TemaProvider>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     gap: 16,
+//   },
+//   titulo: {
+//     fontSize: 24,
+//   },
+// });
+
+// Exemplo 2 — Autenticação com Context
+
+
+// import React, { createContext, useContext, useState } from 'react';
+// import {
+//   View,
+//   Text,
+//   TextInput,
+//   Button,
+//   StyleSheet,
+// } from 'react-native';
+
+// const AuthContext = createContext(null);
+
+// function AuthProvider({ children }) {
+//   const [usuario, setUsuario] = useState(null);
+
+//   function login(email, senha) {
+//     if (senha !== '123456') return false;
+
+//     setUsuario({ nome: email.split('@')[0], email });
+//     return true;
+//   }
+
+//   function logout() {
+//     setUsuario(null);
+//   }
+
+//   return (
+//     <AuthContext.Provider
+//       value={{
+//         usuario,
+//         logado: !!usuario,
+//         login,
+//         logout,
+//       }}
+//     >
+//       {children}
+//     </AuthContext.Provider>
+//   );
+// }
+
+// function useAuth() {
+//   const contexto = useContext(AuthContext);
+
+//   if (!contexto) {
+//     throw new Error('useAuth fora do <AuthProvider>');
+//   }
+
+//   return contexto;
+// }
+
+// function Login() {
+//   const { login } = useAuth();
+//   const [email, setEmail] = useState('');
+//   const [senha, setSenha] = useState('');
+//   const [erro, setErro] = useState('');
+
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.titulo}>Login</Text>
+
+//       <TextInput
+//         style={styles.campo}
+//         placeholder="E-mail"
+//         value={email}
+//         onChangeText={setEmail}
+//       />
+
+//       <TextInput
+//         style={styles.campo}
+//         placeholder="Senha"
+//         value={senha}
+//         onChangeText={setSenha}
+//         secureTextEntry
+//       />
+
+//       <Button
+//         title="Entrar"
+//         onPress={() => {
+//           const resultado = login(email, senha);
+//           setErro(resultado ? '' : 'Senha incorreta!');
+//         }}
+//       />
+
+//       {erro !== '' && <Text style={styles.erro}>{erro}</Text>}
+//     </View>
+//   );
+// }
+
+// function Home() {
+//   const { usuario, logout } = useAuth();
+
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.titulo}>
+//         Bem-vindo, {usuario.nome}!
+//       </Text>
+
+//       <Button title="Sair" onPress={logout} />
+//     </View>
+//   );
+// }
+
+// function Rotas() {
+//   const { logado } = useAuth();
+
+//   return logado ? <Home /> : <Login />;
+// }
+
+// export default function App() {
+//   return (
+//     <AuthProvider>
+//       <Rotas />
+//     </AuthProvider>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     padding: 20,
+//     gap: 12,
+//   },
+//   titulo: {
+//     fontSize: 28,
+//     textAlign: 'center',
+//   },
+//   campo: {
+//     borderWidth: 1,
+//     borderColor: '#999',
+//     borderRadius: 8,
+//     padding: 10,
+//   },
+//   erro: {
+//     color: 'red',
+//   },
+// });
+
+// Exemplo 3 — Catálogo com favoritos
+
+
+// import React, { createContext, useContext, useState } from 'react';
+// import {
+//   View,
+//   Text,
+//   TextInput,
+//   FlatList,
+//   TouchableOpacity,
+//   StyleSheet,
+// } from 'react-native';
+
+// const FavoritosContext = createContext(null);
+
+// function FavoritosProvider({ children }) {
+//   const [favoritos, setFavoritos] = useState([]);
+
+//   function alternarFavorito(id) {
+//     setFavoritos(ant =>
+//       ant.includes(id)
+//         ? ant.filter(f => f !== id)
+//         : [...ant, id]
+//     );
+//   }
+
+//   return (
+//     <FavoritosContext.Provider
+//       value={{ favoritos, alternarFavorito }}
+//     >
+//       {children}
+//     </FavoritosContext.Provider>
+//   );
+// }
+
+// const useFavoritos = () => useContext(FavoritosContext);
+
+// function Catalogo() {
+//   const { favoritos, alternarFavorito } = useFavoritos();
+//   const [busca, setBusca] = useState('');
+
+//   const dados = [
+//     { id: 1, nome: 'Notebook', preco: 2500 },
+//     { id: 2, nome: 'Celular', preco: 1500 },
+//     { id: 3, nome: 'Fone de ouvido', preco: 200 },
+//     { id: 4, nome: 'Teclado', preco: 150 },
+//   ];
+
+//   const produtos = dados.filter(p =>
+//     p.nome.toLowerCase().includes(busca.toLowerCase())
+//   );
+
+//   return (
+//     <View style={styles.container}>
+//       <TextInput
+//         style={styles.busca}
+//         placeholder="Buscar produto..."
+//         value={busca}
+//         onChangeText={setBusca}
+//       />
+
+//       <FlatList
+//         data={produtos}
+//         keyExtractor={item => String(item.id)}
+//         renderItem={({ item }) => (
+//           <View style={styles.item}>
+//             <View style={styles.info}>
+//               <Text style={styles.nome}>{item.nome}</Text>
+//               <Text>R$ {item.preco.toFixed(2)}</Text>
+//             </View>
+
+//             <TouchableOpacity
+//               onPress={() => alternarFavorito(item.id)}
+//             >
+//               <Text style={styles.estrela}>
+//                 {favoritos.includes(item.id) ? '★' : '☆'}
+//               </Text>
+//             </TouchableOpacity>
+//           </View>
+//         )}
+//         ListHeaderComponent={
+//           <Text>{favoritos.length} favoritos</Text>
+//         }
+//         ListEmptyComponent={
+//           <Text style={styles.vazio}>Nada encontrado</Text>
+//         }
+//       />
+//     </View>
+//   );
+// }
+
+// export default function App() {
+//   return (
+//     <FavoritosProvider>
+//       <Catalogo />
+//     </FavoritosProvider>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     padding: 16,
+//     paddingTop: 60,
+//   },
+//   busca: {
+//     borderWidth: 1,
+//     borderColor: '#999',
+//     borderRadius: 8,
+//     padding: 10,
+//     marginBottom: 12,
+//   },
+//   item: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     paddingVertical: 12,
+//   },
+//   info: {
+//     flex: 1,
+//   },
+//   nome: {
+//     fontSize: 18,
+//   },
+//   estrela: {
+//     fontSize: 28,
+//     color: '#E8A400',
+//   },
+//   vazio: {
+//     textAlign: 'center',
+//     marginTop: 40,
+//   },
+// });
+
+
